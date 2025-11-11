@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2024 Moros
+ * Copyright 2020-2025 Moros
  *
  * This file is part of Storage.
  *
@@ -19,9 +19,9 @@
 
 package me.moros.storage;
 
-import com.zaxxer.hikari.HikariDataSource;
+import java.util.Objects;
 
-import static java.util.Objects.requireNonNull;
+import com.zaxxer.hikari.HikariDataSource;
 
 /**
  * Represents an immutable data structure for wrapping a {@link HikariDataSource}.
@@ -45,6 +45,6 @@ public interface StorageDataSource {
    * @return a new builder
    */
   static Builder builder(StorageType engine) {
-    return new Builder(requireNonNull(engine));
+    return new Builder(Objects.requireNonNull(engine));
   }
 }

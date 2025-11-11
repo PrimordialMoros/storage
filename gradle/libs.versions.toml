@@ -1,0 +1,11 @@
+[versions]
+jspecify = "1.0.0"
+hikari = "7.0.2"
+maven-publish = "0.34.0"
+
+[libraries]
+jspecify = { module = "org.jspecify:jspecify", version.ref = "jspecify" }
+hikari = { module = "com.zaxxer:HikariCP", version.ref = "hikari" }
+
+[plugins]
+maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publish" }

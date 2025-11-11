@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2024 Moros
+ * Copyright 2020-2025 Moros
  *
  * This file is part of Storage.
  *
@@ -20,10 +20,7 @@
 /**
  * Provides classes for creating database connections.
  */
-@DefaultQualifier(value = NonNull.class, locations = TypeUseLocation.PARAMETER)
-@DefaultQualifier(value = NonNull.class, locations = TypeUseLocation.RETURN)
+@NullMarked
 package me.moros.storage;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.framework.qual.DefaultQualifier;
-import org.checkerframework.framework.qual.TypeUseLocation;
+import org.jspecify.annotations.NullMarked;

@@ -1,17 +1,17 @@
+import com.vanniktech.maven.publish.JavaLibrary
+import com.vanniktech.maven.publish.JavadocJar
+
 plugins {
-    java
+    `java-library`
+    alias(libs.plugins.maven.publish)
     signing
-    `maven-publish`
-    id("org.checkerframework").version("0.6.28")
 }
 
 group = "me.moros"
-version = "3.3.0"
+version = "4.0.0"
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
-    withJavadocJar()
-    withSourcesJar()
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
 }
 
 repositories {
@@ -19,67 +19,59 @@ repositories {
 }
 
 dependencies {
-    compileOnly("com.zaxxer", "HikariCP", "5.1.0")
+    api(libs.jspecify)
+    compileOnly(libs.hikari)
 }
 
 tasks {
-    withType<Sign>().configureEach {
-        onlyIf { !isSnapshot() }
-    }
     withType<JavaCompile> {
+        options.compilerArgs.addAll(listOf("-Xlint:unchecked", "-Xlint:deprecation"))
         options.encoding = "UTF-8"
     }
-    named<Copy>("processResources") {
-        from(rootProject.file("LICENSE")) {
-            rename { "META-INF/${it}_${rootProject.name.uppercase()}" }
+    withType<AbstractArchiveTask>().configureEach {
+        isPreserveFileTimestamps = false
+        isReproducibleFileOrder = true
+    }
+    jar {
+        val licenseName = "LICENSE_${rootProject.name.uppercase()}"
+        from("$rootDir/LICENSE") {
+            into("META-INF")
+            rename { licenseName }
         }
     }
 }
 
-publishing {
-    publications.create<MavenPublication>("maven") {
-        from(components["java"])
-        pom {
-            name.set(project.name)
-            description.set("A utility library to easily build and wrap HikariDataSources")
-            url.set("https://github.com/PrimordialMoros/Storage")
-            licenses {
-                license {
-                    name.set("The GNU Affero General Public License, Version 3.0")
-                    url.set("https://www.gnu.org/licenses/agpl-3.0.txt")
-                    distribution.set("repo")
-                }
-            }
-            developers {
-                developer {
-                    id.set("moros")
-                    name.set("Moros")
-                }
-            }
-            scm {
-                connection.set("scm:git:https://github.com/PrimordialMoros/Storage.git")
-                developerConnection.set("scm:git:ssh://git@github.com/PrimordialMoros/Storage.git")
-                url.set("https://github.com/PrimordialMoros/Storage")
-            }
-            issueManagement {
-                system.set("Github")
-                url.set("https://github.com/PrimordialMoros/Storage/issues")
+mavenPublishing {
+    pom {
+        name = project.name
+        description = "A utility library to easily build and wrap HikariDataSources"
+        url = "https://github.com/PrimordialMoros/storage"
+        inceptionYear = "2020"
+        licenses {
+            license {
+                name = "The GNU Affero General Public License, Version 3.0"
+                url = "https://www.gnu.org/licenses/agpl-3.0.txt"
+                distribution = "repo"
             }
         }
-    }
-    repositories {
-        val snapshotUrl = uri("https://oss.sonatype.org/content/repositories/snapshots/")
-        val releaseUrl = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
-        maven {
-            name = "sonatype"
-            credentials(PasswordCredentials::class)
-            url = if (isSnapshot()) snapshotUrl else releaseUrl
+        developers {
+            developer {
+                id = "moros"
+                name = "Moros"
+                url = "https://github.com/PrimordialMoros"
+            }
+        }
+        scm {
+            connection = "scm:git:https://github.com/PrimordialMoros/storage.git"
+            developerConnection = "scm:git:ssh://git@github.com/PrimordialMoros/storage.git"
+            url = "https://github.com/PrimordialMoros/storage"
+        }
+        issueManagement {
+            system = "Github"
+            url = "https://github.com/PrimordialMoros/storage/issues"
         }
     }
+    configure(JavaLibrary(JavadocJar.Javadoc(), true))
+    publishToMavenCentral()
+    signAllPublications()
 }
-
-signing {
-    sign(publishing.publications["maven"])
-}
-
-fun isSnapshot() = project.version.toString().endsWith("-SNAPSHOT")

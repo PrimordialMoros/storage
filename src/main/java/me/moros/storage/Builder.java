@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2024 Moros
+ * Copyright 2020-2025 Moros
  *
  * This file is part of Storage.
  *
@@ -27,7 +27,7 @@ import java.util.function.Consumer;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -39,7 +39,7 @@ public final class Builder {
   private final HikariConfig config;
   private final Properties dataSourceProperties;
 
-  private Path path = null;
+  private @Nullable Path path = null;
   private String host = "localhost";
   private String database = "";
   private int port;
@@ -218,8 +218,5 @@ public final class Builder {
     dataSourceProperties.put("cacheServerConfiguration", true);
     dataSourceProperties.put("elideSetAutoCommits", true);
     dataSourceProperties.put("maintainTimeStats", false);
-  }
-
-  private record SimpleStorage(StorageType type, HikariDataSource source) implements StorageDataSource {
   }
 }
