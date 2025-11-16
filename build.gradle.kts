@@ -28,7 +28,7 @@ tasks {
         options.compilerArgs.addAll(listOf("-Xlint:unchecked", "-Xlint:deprecation"))
         options.encoding = "UTF-8"
     }
-    withType<AbstractArchiveTask>().configureEach {
+    withType<AbstractArchiveTask> {
         isPreserveFileTimestamps = false
         isReproducibleFileOrder = true
     }
